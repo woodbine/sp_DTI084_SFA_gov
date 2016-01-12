@@ -86,7 +86,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "DTI084_SFA_gov"
-url = "http://data.gov.uk/dataset/spend-in-the-skills-funding-agency"
+url = "https://www.gov.uk/government/publications/sfa-spend-over-25000"
 errors = 0
 data = []
 
@@ -99,11 +99,12 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-blocks = soup.find_all('ul', 'dropdown-menu')[:-1]
+blocks = soup.find_all('div', 'attachment-details')
 for block in blocks:
-    url = block.find_all('a', href=True)[1]['href']
-    csvMth = url.split('/')[-1].split('_')[0][:3]
-    csvYr = url.split('/')[-1].split('_')[-1][:4]
+    url = 'https://www.gov.uk'+block.find('span', 'download').find('a')['href']
+    title = block.find('h2', 'title').text.strip()
+    csvMth = title[:3]
+    csvYr = title[-4:]
     csvMth = convert_mth_strings(csvMth.upper())
     data.append([csvYr, csvMth, url])
 
